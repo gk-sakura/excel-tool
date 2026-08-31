@@ -9,7 +9,6 @@ public class MultiExcelMergeService
     public XLWorkbook Merge(IEnumerable<string> filePaths)
     {
         var targetWorkbook = new XLWorkbook();
-        int index = 0;
         // 遍历所有Excel
         foreach (var filePath in filePaths)
         {
@@ -39,7 +38,7 @@ public class MultiExcelMergeService
                     var firstColumn = sourceRow.FirstCellUsed()?.Address.ColumnNumber;
                     var lastColumn = sourceRow.LastCellUsed()?.Address.ColumnNumber;
 
-                    if (firstColumn is null || lastColumn is null || (index > 0 && sourceRow.RowNumber() == 1))
+                    if (firstColumn is null || lastColumn is null)
                     {
                         continue;
                     }
@@ -53,7 +52,6 @@ public class MultiExcelMergeService
                     targetRowNumber++;
                 }
             }
-            index++;
         }
 
         return targetWorkbook;

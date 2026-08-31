@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ExcelTool.Services.FileSystem;
@@ -27,30 +28,30 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task MultiExcelMergeAsync()
     {
-        var filePaths = await _filePickerService.PickFolderFilesAsync([".xlsx"]);
-        if (filePaths.Length == 0)
+        var (filePaths, folderPath) = await _filePickerService.PickFolderFilesAsync([".xlsx"]);
+        Console.WriteLine(folderPath);
+        if (filePaths.Length == 0 || folderPath is null)
         {
             return;
         }
         using var workbook = _multiExcelMergeService.Merge(filePaths);
-        var savedPath = await _filePickerService.SaveExcelAsync(
+        await _filePickerService.SaveExcelAsync(
             workbook,
-            $"合并结果_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
-        if (savedPath is null)
-        {
-            return;
-        }
+            $"{Path.GetFileName(Path.TrimEndingDirectorySeparator(folderPath))}_合并结果.xlsx");
     }
     
     // 合并同一个Excel中的多个sheet，可以选择多个Excel文件分别合并
     [RelayCommand]
     private async Task MultiSheetMergeAsync()
     {
-        var filePaths = await _filePickerService.PickFolderFilesAsync([".xlsx"]);
-        if (filePaths.Length == 0)
+        var (filePaths, folderPath) = await _filePickerService.PickFolderFilesAsync([".xlsx"]);
+        if (filePaths.Length == 0 || folderPath is null)
         {
             return;
         }
-        _multiSheetMergeService.Merge(filePaths);
+        using var workbook = _multiSheetMergeService.Merge(filePaths);
+        await _filePickerService.SaveExcelAsync(
+            workbook,
+            $"{Path.GetFileName(Path.TrimEndingDirectorySeparator(folderPath))}_合并结果.xlsx");
     }
 }

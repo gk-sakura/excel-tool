@@ -1,12 +1,23 @@
 using System.Collections.Generic;
+using System.IO;
 using ClosedXML.Excel;
 
 namespace ExcelTool.Services.Workflows;
 
 public class MultiSheetMergeService
 {
-    public void Merge(IEnumerable<string> filePaths)
+    public XLWorkbook Merge(IEnumerable<string> filePaths)
     {
-        using var workbook = new XLWorkbook();
+        var targetWorkbook = new XLWorkbook();
+        foreach (var filepath in filePaths)
+        {
+            var sourceWorkbook = new XLWorkbook(filepath);
+            foreach (var sourceSheet in sourceWorkbook.Worksheets)
+            {
+                sourceSheet.CopyTo(targetWorkbook, $"{Path.GetFileName(filepath)}{sourceSheet.Name}");
+            }
+        }
+
+        return targetWorkbook;
     }
 }

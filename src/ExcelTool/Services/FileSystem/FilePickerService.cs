@@ -42,7 +42,7 @@ public class FilePickerService
     /// 选择文件夹，并读取指定格式的文件
     /// </summary>
     /// <returns></returns>
-    public async Task<string[]> PickFolderFilesAsync(
+    public async Task<(string[] FilePaths, string? FolderPath)> PickFolderFilesAsync(
         string[] extensions,
         bool includeSubdirectories = false)
     {
@@ -55,51 +55,32 @@ public class FilePickerService
         // 取消选择
         if (folders.Count == 0)
         {
-            return [];
+            return ([], null);
         }
 
         string folderPath = folders[0].Path.LocalPath;
         var searchOption = includeSubdirectories
             ? SearchOption.AllDirectories
             : SearchOption.TopDirectoryOnly;
-        return Directory
+        var filePaths = Directory
             .EnumerateFiles(folderPath, "*", searchOption)
             .Where(file => !Path.GetFileName(file).StartsWith("~$"))
             .Where(file => extensions.Contains(
                 Path.GetExtension(file),
                 StringComparer.OrdinalIgnoreCase))
             .ToArray();
+
+        return (filePaths, folderPath);
     }
 
     public async Task<string?> SaveExcelAsync(
         XLWorkbook workbook,
         string suggestedFileName = "合并结果.xlsx")
     {
-        var file = await _storageProvider.SaveFilePickerAsync(
-            new FilePickerSaveOptions
-            {
-                Title = "保存Excel文件",
-                SuggestedFileName = suggestedFileName,
-                DefaultExtension = "xlsx",
-                ShowOverwritePrompt = true,
-                FileTypeChoices = 
-                    [
-                        new FilePickerFileType("Excel 工作簿")
-                        {
-                            Patterns = ["*.xlsx"],
-                            MimeTypes = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
-                        }
-                    ]
-            });
+        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        var filePath = Path.Combine(desktopPath, suggestedFileName);
+        workbook.SaveAs(filePath);
 
-        if (file is null)
-        {
-            return null;
-        }
-
-        await using var stream = await file.OpenWriteAsync();
-        workbook.SaveAs(stream);
-
-        return file.Path.LocalPath;
+        return filePath;
     }
 }
