@@ -24,6 +24,7 @@ public partial class App : Application
             mainWindow.DataContext = new MainViewModel(
                 new MultiExcelMergeService(),
                 new MultiSheetMergeService(),
+                new CreateFolderFromExcelService(),
                 filePickerService);
             desktop.MainWindow = mainWindow;
         }

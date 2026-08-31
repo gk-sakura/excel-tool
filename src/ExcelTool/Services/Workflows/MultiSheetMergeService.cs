@@ -14,7 +14,7 @@ public class MultiSheetMergeService
             var sourceWorkbook = new XLWorkbook(filepath);
             foreach (var sourceSheet in sourceWorkbook.Worksheets)
             {
-                sourceSheet.CopyTo(targetWorkbook, $"{Path.GetFileName(filepath)}{sourceSheet.Name}");
+                sourceSheet.CopyTo(targetWorkbook, $"{Path.GetFileNameWithoutExtension(filepath)}{sourceSheet.Name}");
             }
         }
 

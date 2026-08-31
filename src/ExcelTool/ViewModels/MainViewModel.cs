@@ -12,15 +12,18 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly MultiExcelMergeService _multiExcelMergeService;
     private readonly MultiSheetMergeService _multiSheetMergeService;
+    private readonly CreateFolderFromExcelService _createFolderFromExcelService;
     private readonly FilePickerService _filePickerService;
     
     public MainViewModel(
         MultiExcelMergeService multiExcelMergeService,
         MultiSheetMergeService multiSheetMergeService,
+        CreateFolderFromExcelService createFolderFromExcelService,
         FilePickerService filePickerService)
     {
         _multiExcelMergeService = multiExcelMergeService;
         _multiSheetMergeService = multiSheetMergeService;
+        _createFolderFromExcelService = createFolderFromExcelService;
         _filePickerService = filePickerService;
     }
     
@@ -53,5 +56,28 @@ public partial class MainViewModel : ViewModelBase
         await _filePickerService.SaveExcelAsync(
             workbook,
             $"{Path.GetFileName(Path.TrimEndingDirectorySeparator(folderPath))}_合并结果.xlsx");
+    }
+
+    /// <summary>
+    /// 读取一个Excel中第一个sheet的第一列，根据这列创建文件夹
+    /// </summary>
+    [RelayCommand]
+    private async Task CreateFolderFromExcelAsync()
+    {
+        var filePaths = await _filePickerService.PickExcelFilesAsync(false);
+        if (filePaths.Length == 0)
+        {
+            return;
+        }
+        var names = _createFolderFromExcelService.GetFolderNames(filePaths[0]);
+        var parentFolder = Path.GetDirectoryName(filePaths[0]);
+        if (parentFolder is null)
+        {
+            return;
+        }
+        foreach (var name in names)
+        {
+            Directory.CreateDirectory(Path.Combine(parentFolder, name));
+        }
     }
 }

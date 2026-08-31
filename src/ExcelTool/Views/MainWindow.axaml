@@ -29,21 +29,18 @@
     </Window.Styles>
     <Grid>
         <StackPanel HorizontalAlignment="Center" Margin="24" Spacing="12">
-            <Button Content="合并多个Excel"
+            <Button Content="合并工作簿"
                     Command="{Binding MultiExcelMergeCommand}"
                     Classes="primary"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Center" />
-            <Button Content="合并单元簿"
+            <Button Content="合并Excel"
                     Command="{Binding MultiSheetMergeCommand}"
                     Classes="primary"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Center" />
             <Button Content="批量新建文件夹"
-                    Classes="primary"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Center" />
-            <Button Content="提取名称"
+                    Command="{Binding CreateFolderFromExcelCommand}"
                     Classes="primary"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Center" />

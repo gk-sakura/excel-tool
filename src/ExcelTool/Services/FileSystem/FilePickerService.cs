@@ -20,13 +20,13 @@ public class FilePickerService
     /// 选择多个Excel文件
     /// </summary>
     /// <returns></returns>
-    public async Task<string[]> PickExcelFilesAsync()
+    public async Task<string[]> PickExcelFilesAsync(bool allowMultiple = true)
     {
         var files = await _storageProvider.OpenFilePickerAsync(
             new FilePickerOpenOptions
             {
                 Title = "选择Excel文件",
-                AllowMultiple = true,
+                AllowMultiple = allowMultiple,
                 FileTypeFilter = [
                     new FilePickerFileType("Excel 文件")
                     {
@@ -41,6 +41,8 @@ public class FilePickerService
     /// <summary>
     /// 选择文件夹，并读取指定格式的文件
     /// </summary>
+    /// <param name="extensions"></param>
+    /// <param name="includeSubdirectories"></param>
     /// <returns></returns>
     public async Task<(string[] FilePaths, string? FolderPath)> PickFolderFilesAsync(
         string[] extensions,
@@ -73,6 +75,12 @@ public class FilePickerService
         return (filePaths, folderPath);
     }
 
+    /// <summary>
+    /// 保存Excel到桌面
+    /// </summary>
+    /// <param name="workbook"></param>
+    /// <param name="suggestedFileName"></param>
+    /// <returns></returns>
     public async Task<string?> SaveExcelAsync(
         XLWorkbook workbook,
         string suggestedFileName = "合并结果.xlsx")
