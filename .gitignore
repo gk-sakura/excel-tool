@@ -1,0 +1,14 @@
+# .NET build outputs
+**/bin/
+**/obj/
+
+# Rider / JetBrains user-specific files
+.idea/
+*.sln.iml
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Local logs
+*.log
