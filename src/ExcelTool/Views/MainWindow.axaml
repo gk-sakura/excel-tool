@@ -1,0 +1,53 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ExcelTool.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="ExcelTool.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        
+        Width="180"
+        MinHeight="200"
+        MaxHeight="800"
+        SizeToContent="Height"
+        
+        Title="Excel工具箱">
+    <Window.Styles>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="#2563EB"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="CornerRadius" Value="8"></Setter>
+        </Style>
+        <Style Selector="Button.primary:pointerover">
+            <Setter Property="Background" Value="#1D4ED8"></Setter>
+        </Style>
+        <Style Selector="Button.primary:pressed">
+            <Setter Property="Background" Value="#1E40AF"></Setter>
+        </Style>
+    </Window.Styles>
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" Margin="24" Spacing="12">
+            <Button Content="合并多个Excel"
+                    Command="{Binding MultiExcelMergeCommand}"
+                    Classes="primary"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" />
+            <Button Content="合并单元簿"
+                    Command="{Binding MultiSheetMergeCommand}"
+                    Classes="primary"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" />
+            <Button Content="批量新建文件夹"
+                    Classes="primary"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" />
+            <Button Content="提取名称"
+                    Classes="primary"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" />
+        </StackPanel>
+    </Grid>
+
+</Window>
