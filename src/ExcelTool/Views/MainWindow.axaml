@@ -8,206 +8,105 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/app-icon.ico"
         
-        Width="1120"
-        Height="650"
-        MinWidth="1000"
-        MinHeight="580"
+        Width="1180"
+        Height="880"
+        MinWidth="960"
+        MinHeight="720"
         
         Title="Excel工具箱">
     <Window.Styles>
-        <Style Selector="Button.primary">
-            <Setter Property="Background" Value="#2563EB"></Setter>
-            <Setter Property="Foreground" Value="White"></Setter>
-            <Setter Property="CornerRadius" Value="8"></Setter>
-        </Style>
-        <Style Selector="Button.primary:pointerover">
-            <Setter Property="Background" Value="#1D4ED8"></Setter>
-        </Style>
-        <Style Selector="Button.primary:pressed">
-            <Setter Property="Background" Value="#1E40AF"></Setter>
-        </Style>
+        <Style Selector="TextBlock"><Setter Property="FontFamily" Value="Inter, Microsoft YaHei UI, PingFang SC"/></Style>
+        <Style Selector="Button"><Setter Property="FontFamily" Value="Inter, Microsoft YaHei UI, PingFang SC"/><Setter Property="FontSize" Value="14"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+        <Style Selector="Button.primary"><Setter Property="Height" Value="48"/><Setter Property="Padding" Value="24,0"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/><Setter Property="Background" Value="#0F9F62"/><Setter Property="Foreground" Value="White"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="CornerRadius" Value="8"/></Style>
+        <Style Selector="Button.primary:pointerover"><Setter Property="Background" Value="#0B8954"/></Style>
+        <Style Selector="Button.primary:pressed"><Setter Property="Background" Value="#087347"/></Style>
+        <Style Selector="Button.primary:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#0B8954"/><Setter Property="Foreground" Value="White"/></Style>
+        <Style Selector="Button.primary:pressed /template/ ContentPresenter"><Setter Property="Background" Value="#087347"/><Setter Property="Foreground" Value="White"/></Style>
+        <Style Selector="Button.secondary"><Setter Property="Height" Value="44"/><Setter Property="Padding" Value="18,0"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/><Setter Property="Background" Value="White"/><Setter Property="Foreground" Value="#243142"/><Setter Property="BorderBrush" Value="#CBD3DC"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/></Style>
+        <Style Selector="Button.secondary:pointerover"><Setter Property="Background" Value="#F4F7F9"/><Setter Property="BorderBrush" Value="#9BA8B7"/></Style>
+        <Style Selector="Button.secondary:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#F4F7F9"/><Setter Property="Foreground" Value="#17212B"/><Setter Property="BorderBrush" Value="#9BA8B7"/></Style>
+        <Style Selector="Button.secondary:pressed /template/ ContentPresenter"><Setter Property="Background" Value="#E8EDF2"/><Setter Property="Foreground" Value="#17212B"/></Style>
+        <Style Selector="Border.field"><Setter Property="MinHeight" Value="44"/><Setter Property="Padding" Value="14,0"/><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#D8DEE6"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/></Style>
+        <Style Selector="ListBox.nav"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="0"/></Style>
+        <Style Selector="ListBox.nav ListBoxItem"><Setter Property="Margin" Value="0,3"/><Setter Property="Padding" Value="18,15"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Foreground" Value="#CBD6E3"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/></Style>
+        <Style Selector="ListBox.nav ListBoxItem:selected"><Setter Property="Background" Value="#243A55"/><Setter Property="Foreground" Value="White"/></Style>
+        <Style Selector="ListBox.nav ListBoxItem:pointerover"><Setter Property="Background" Value="#1C314B"/></Style>
+        <Style Selector="TextBlock.fileLabel"><Setter Property="Foreground" Value="#344154"/><Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="Medium"/></Style>
     </Window.Styles>
-    <Grid>
-        <Image
-            Source="/Assets/background.jpg"
-            Stretch="UniformToFill"
-            Opacity="0.85"
-            IsHitTestVisible="False"/>
-        <Grid
-            Margin="12"
-            RowDefinitions="Auto, Auto, Auto, *, Auto"
-            RowSpacing="12">
-            <Grid 
-                Grid.Row="0"
-                ColumnDefinitions="100, Auto, Auto"
-                ColumnSpacing="12">
-                <Border
-                    Grid.Column="0"
-                    Background="#99FFFFFF"
-                    CornerRadius="6">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="#1F2937"
-                        Text="选择功能"/>
+    <Grid ColumnDefinitions="264,*" Background="#F6F8FA">
+        <Border Grid.Column="0" Background="#10263F" Padding="22,28,22,20">
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+                <Grid ColumnDefinitions="48,*" ColumnSpacing="13">
+                    <Border Width="48" Height="48" CornerRadius="10" Background="#18A764">
+                        <TextBlock Text="X" Foreground="White" FontSize="25" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="3">
+                        <TextBlock Text="Excel 工具箱" Foreground="White" FontSize="18" FontWeight="SemiBold"/>
+                        <TextBlock Text="高效处理表格与批量任务" Foreground="#91A3B7" FontSize="11"/>
+                    </StackPanel>
+                </Grid>
+                <TextBlock Grid.Row="1" Text="工作流" Foreground="#6F849B" FontSize="11" FontWeight="SemiBold" Margin="8,38,0,9"/>
+                <ListBox Grid.Row="2" Classes="nav" ItemsSource="{Binding Functions}" SelectedItem="{Binding SelectedFunction, Mode=TwoWay}">
+                    <ListBox.ItemTemplate><DataTemplate><Grid ColumnDefinitions="4,*" ColumnSpacing="13"><Border Width="4" Height="18" CornerRadius="2" Background="#20C979"/><TextBlock Grid.Column="1" Text="{Binding DisplayName}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/></Grid></DataTemplate></ListBox.ItemTemplate>
+                </ListBox>
+                <Border Grid.Row="3" BorderBrush="#29415B" BorderThickness="0,1,0,0" Padding="4,17,4,0">
+                    <Grid ColumnDefinitions="*,Auto"><TextBlock Text="本地安全处理" Foreground="#7F92A7" FontSize="11"/><TextBlock Grid.Column="1" Text="v1.0" Foreground="#7F92A7" FontSize="11"/></Grid>
                 </Border>
-                <ComboBox
-                    Grid.Column="1"
-                    ItemsSource="{Binding Functions}"
-                    SelectedItem="{Binding SelectedFunction, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding DisplayName}"></TextBlock>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <Button 
-                    Grid.Column="2"
-                    Content="开始执行"
-                    Classes="primary"
-                    Command="{Binding ExecuteCommandCommand}"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" RowDefinitions="*,Auto">
+            <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <Grid Margin="58,46,58,34" MaxWidth="980" HorizontalAlignment="Stretch" RowDefinitions="Auto,Auto,*">
+                    <StackPanel Spacing="9">
+                        <TextBlock Text="{Binding WorkspaceTitle}" Foreground="#17212B" FontSize="32" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding WorkspaceDescription}" Foreground="#667281" FontSize="14"/>
+                    </StackPanel>
+                    <Border Grid.Row="1" Height="1" Background="#DDE2E8" Margin="0,28,0,30"/>
+                    <StackPanel Grid.Row="2" Spacing="24">
+            <Grid
+                IsVisible="{Binding ShowSelectTargetFolder}"
+                RowDefinitions="Auto,Auto" RowSpacing="9">
+                <StackPanel><TextBlock Text="保存位置" Foreground="#243142" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="选择处理结果的保存文件夹。" Foreground="#7A8694" FontSize="12" Margin="0,5,0,0"/></StackPanel>
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12"><Border Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding TargetFolderPath}" TextTrimming="CharacterEllipsis"/></Border><Button Grid.Column="1" Content="选择文件夹" Classes="secondary" Command="{Binding SelectTargetFolderCommand}"/></Grid>
             </Grid>
             <Grid
                 IsVisible="{Binding ShowSelectSourceFolder}"
-                Grid.Row="1"
-                ColumnDefinitions="100, Auto, Auto"
-                ColumnSpacing="12">
-                <Border
-                    Grid.Column="0"
-                    Background="#99FFFFFF"
-                    CornerRadius="6">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="#1F2937"
-                        Text="文件路径"/>
-                </Border>
-                <Border
-                    Grid.Column="1"
-                    Background="#99FFFFFF"
-                    CornerRadius="6">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        Foreground="#1F2937"
-                        Padding="12 0"
-                        Text="{Binding SourceFolderPath}"/>
-                </Border>
-                <Button
-                    Grid.Column="2"
-                    Content="选择"
-                    Classes="primary"
-                    Command="{Binding SelectSourceFolderCommand}"/>
-            </Grid>
-            <Grid
-                IsVisible="{Binding ShowSelectTargetFolder}"
-                Grid.Row="2"
-                ColumnDefinitions="100, Auto, Auto"
-                ColumnSpacing="12">
-                <Border
-                    Grid.Column="0"
-                    Background="#99FFFFFF"
-                    CornerRadius="6">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="#1F2937"
-                        Text="保存路径"/>
-                </Border>
-                <Border
-                    Grid.Column="1"
-                    Background="#99FFFFFF"
-                    CornerRadius="6">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        Foreground="#1F2937"
-                        Padding="12 0"
-                        Text="{Binding TargetFolderPath}"/>
-                </Border>
-                <Button
-                    Grid.Column="2"
-                    Content="选择"
-                    Classes="primary"
-                    Command="{Binding SelectTargetFolderCommand}"/>
+                RowDefinitions="Auto,Auto" RowSpacing="9">
+                <StackPanel><TextBlock Text="源文件夹" Foreground="#243142" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="选择包含待处理 Excel 文件的文件夹。" Foreground="#7A8694" FontSize="12" Margin="0,5,0,0"/></StackPanel>
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12"><Border Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding SourceFolderPath}" TextTrimming="CharacterEllipsis"/></Border><Button Grid.Column="1" Content="选择文件夹" Classes="secondary" Command="{Binding SelectSourceFolderCommand}"/></Grid>
             </Grid>
             <Grid
                 IsVisible="{Binding ShowSelectSourceFile}"
-                Grid.Row="1"
-                ColumnDefinitions="100, Auto, Auto"
-                ColumnSpacing="12">
-                <Border
-                    Grid.Column="0"
-                    Background="#99FFFFFF"
-                    CornerRadius="6">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Text="文件路径"
-                        Foreground="#1F2937"/>
-                </Border>
-                <Border
-                    Grid.Column="1"
-                    Background="#99FFFFFF"
-                    CornerRadius="6">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        Foreground="#1F2937"
-                        Padding="12 0"
-                        Text="{Binding SourceFilePath}"/>
-                </Border>
-                <Button
-                    Grid.Column="2"
-                    Content="选择"
-                    Classes="primary"
-                    Command="{Binding SelectSourceFileCommand}"/>
+                RowDefinitions="Auto,Auto" RowSpacing="9">
+                <StackPanel><TextBlock Text="源 Excel 文件" Foreground="#243142" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="读取首个工作表第一列中的文件夹名称。" Foreground="#7A8694" FontSize="12" Margin="0,5,0,0"/></StackPanel>
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12"><Border Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding SourceFilePath}" TextTrimming="CharacterEllipsis"/></Border><Button Grid.Column="1" Content="选择文件" Classes="secondary" Command="{Binding SelectSourceFileCommand}"/></Grid>
             </Grid>
             <Grid
                 IsVisible="{Binding ShowSelectSourceFiles}"
-                Grid.Row="1"
                 ColumnDefinitions="*">
-                <StackPanel Spacing="8">
-                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
-                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="研发人员考勤源表"/></Border>
-                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdAttendanceDisplayPath}" ToolTip.Tip="{Binding RdAttendanceFilePath}"/></Border>
-                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdAttendanceFileCommand}"/>
-                    </Grid>
-                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
-                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="研发项目及周期汇总表"/></Border>
-                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdProjectSummaryDisplayPath}" ToolTip.Tip="{Binding RdProjectSummaryFilePath}"/></Border>
-                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdProjectSummaryFileCommand}"/>
-                    </Grid>
-                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
-                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="人员与项目关系匹配表"/></Border>
-                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdPersonProjectDisplayPath}" ToolTip.Tip="{Binding RdPersonProjectFilePath}"/></Border>
-                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdPersonProjectFileCommand}"/>
-                    </Grid>
-                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
-                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="人员花名册及基础信息"/></Border>
-                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdStaffDisplayPath}" ToolTip.Tip="{Binding RdStaffFilePath}"/></Border>
-                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdStaffFileCommand}"/>
-                    </Grid>
-                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
-                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="考勤规则拆解表"/></Border>
-                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdRulesDisplayPath}" ToolTip.Tip="{Binding RdRulesFilePath}"/></Border>
-                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdRulesFileCommand}"/>
-                    </Grid>
-                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
-                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="历史月份锁定表（可选）"/></Border>
-                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdHistoryLockDisplayPath}" ToolTip.Tip="{Binding RdHistoryLockFilePath}"/></Border>
-                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdHistoryLockFileCommand}"/>
-                    </Grid>
-                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
-                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="日志与分配控制表（可选）"/></Border>
-                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdControlTableDisplayPath}" ToolTip.Tip="{Binding RdControlTableFilePath}"/></Border>
-                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdControlTableFileCommand}"/>
-                    </Grid>
+                <StackPanel Spacing="10">
+                    <TextBlock Text="资料文件" Foreground="#243142" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,3"/>
+                    <Grid ColumnDefinitions="210,*,Auto" ColumnSpacing="12"><TextBlock Classes="fileLabel" Text="研发人员考勤源表" VerticalAlignment="Center"/><Border Grid.Column="1" Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding RdAttendanceDisplayPath}" ToolTip.Tip="{Binding RdAttendanceFilePath}"/></Border><Button Grid.Column="2" Content="选择文件" Classes="secondary" Command="{Binding SelectRdAttendanceFileCommand}"/></Grid>
+                    <Grid ColumnDefinitions="210,*,Auto" ColumnSpacing="12"><TextBlock Classes="fileLabel" Text="研发项目及周期汇总表" VerticalAlignment="Center"/><Border Grid.Column="1" Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding RdProjectSummaryDisplayPath}" ToolTip.Tip="{Binding RdProjectSummaryFilePath}"/></Border><Button Grid.Column="2" Content="选择文件" Classes="secondary" Command="{Binding SelectRdProjectSummaryFileCommand}"/></Grid>
+                    <Grid ColumnDefinitions="210,*,Auto" ColumnSpacing="12"><TextBlock Classes="fileLabel" Text="人员与项目关系匹配表" VerticalAlignment="Center"/><Border Grid.Column="1" Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding RdPersonProjectDisplayPath}" ToolTip.Tip="{Binding RdPersonProjectFilePath}"/></Border><Button Grid.Column="2" Content="选择文件" Classes="secondary" Command="{Binding SelectRdPersonProjectFileCommand}"/></Grid>
+                    <Grid ColumnDefinitions="210,*,Auto" ColumnSpacing="12"><TextBlock Classes="fileLabel" Text="人员花名册及基础信息" VerticalAlignment="Center"/><Border Grid.Column="1" Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding RdStaffDisplayPath}" ToolTip.Tip="{Binding RdStaffFilePath}"/></Border><Button Grid.Column="2" Content="选择文件" Classes="secondary" Command="{Binding SelectRdStaffFileCommand}"/></Grid>
+                    <Grid ColumnDefinitions="210,*,Auto" ColumnSpacing="12"><TextBlock Classes="fileLabel" Text="考勤规则拆解表" VerticalAlignment="Center"/><Border Grid.Column="1" Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding RdRulesDisplayPath}" ToolTip.Tip="{Binding RdRulesFilePath}"/></Border><Button Grid.Column="2" Content="选择文件" Classes="secondary" Command="{Binding SelectRdRulesFileCommand}"/></Grid>
+                    <Grid ColumnDefinitions="210,*,Auto" ColumnSpacing="12"><TextBlock Classes="fileLabel" Text="历史月份锁定表（可选）" VerticalAlignment="Center"/><Border Grid.Column="1" Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding RdHistoryLockDisplayPath}" ToolTip.Tip="{Binding RdHistoryLockFilePath}"/></Border><Button Grid.Column="2" Content="选择文件" Classes="secondary" Command="{Binding SelectRdHistoryLockFileCommand}"/></Grid>
+                    <Grid ColumnDefinitions="210,*,Auto" ColumnSpacing="12"><TextBlock Classes="fileLabel" Text="日志与分配控制表（可选）" VerticalAlignment="Center"/><Border Grid.Column="1" Classes="field"><TextBlock VerticalAlignment="Center" Foreground="#566273" Text="{Binding RdControlTableDisplayPath}" ToolTip.Tip="{Binding RdControlTableFilePath}"/></Border><Button Grid.Column="2" Content="选择文件" Classes="secondary" Command="{Binding SelectRdControlTableFileCommand}"/></Grid>
                 </StackPanel>
             </Grid>
-            <ProgressBar
-                Grid.Row="4"
-                Minimum="0"
-                Maximum="100"
-                Value="{Binding Progress}"/>
+                        <Button Content="{Binding ExecuteButtonText}" Classes="primary" Command="{Binding ExecuteCommandCommand}" HorizontalAlignment="Stretch" Margin="0,8,0,4"/>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+            <Border Grid.Row="1" Background="White" BorderBrush="#DDE2E8" BorderThickness="0,1,0,0" Padding="58,18">
+                <Grid MaxWidth="980" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                    <TextBlock Text="进度" Foreground="#243142" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <ProgressBar Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Progress}" Height="8" Foreground="#12A864" Background="#E6EBEF"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10"><TextBlock Text="{Binding ProgressStatus}" Foreground="#687585" FontSize="12" VerticalAlignment="Center"/><TextBlock Text="{Binding Progress, StringFormat={}{0:0}%}" Foreground="#243142" FontWeight="SemiBold" VerticalAlignment="Center"/></StackPanel>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
-
 </Window>

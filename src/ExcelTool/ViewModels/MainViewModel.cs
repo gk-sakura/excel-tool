@@ -56,6 +56,24 @@ public partial class MainViewModel : ViewModelBase
         SelectedFunction.Value is ExcelFunction.MergeWorkbooks or ExcelFunction.MergeWorksheets or ExcelFunction.CreateFolders or ExcelFunction.GenerateRdAttendance;
     public bool ShowSelectSourceFile => SelectedFunction.Value is ExcelFunction.CreateFolders;
     public bool ShowSelectSourceFiles => SelectedFunction.Value is ExcelFunction.GenerateRdAttendance;
+    public string WorkspaceTitle => SelectedFunction.DisplayName;
+    public string WorkspaceDescription => SelectedFunction.Value switch
+    {
+        ExcelFunction.MergeWorkbooks => "将文件夹内多个 Excel 工作簿的数据汇总到同一张工作表。",
+        ExcelFunction.MergeWorksheets => "将多个 Excel 工作簿中的工作表合并到一个工作簿中。",
+        ExcelFunction.CreateFolders => "读取 Excel 首个工作表的第一列，并按内容批量创建文件夹。",
+        ExcelFunction.GenerateRdAttendance => "根据考勤、项目与人员资料生成研发工时及配套日志。",
+        _ => "选择一项任务开始处理。"
+    };
+    public string ExecuteButtonText => SelectedFunction.Value switch
+    {
+        ExcelFunction.MergeWorkbooks => "开始合并",
+        ExcelFunction.MergeWorksheets => "开始合并",
+        ExcelFunction.CreateFolders => "开始创建",
+        ExcelFunction.GenerateRdAttendance => "开始生成",
+        _ => "开始执行"
+    };
+    public string ProgressStatus => Progress >= 100 ? "处理完成" : Progress > 0 ? "正在处理，请稍候…" : "就绪，等待开始任务。";
 
     partial void OnSelectedFunctionChanged(FunctionOption value)
     {
@@ -63,7 +81,12 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(ShowSelectTargetFolder));
         OnPropertyChanged(nameof(ShowSelectSourceFile));
         OnPropertyChanged(nameof(ShowSelectSourceFiles));
+        OnPropertyChanged(nameof(WorkspaceTitle));
+        OnPropertyChanged(nameof(WorkspaceDescription));
+        OnPropertyChanged(nameof(ExecuteButtonText));
     }
+
+    partial void OnProgressChanged(double value) => OnPropertyChanged(nameof(ProgressStatus));
     
     
     public MainViewModel(
