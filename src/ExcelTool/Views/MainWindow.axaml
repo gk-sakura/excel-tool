@@ -8,10 +8,8 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         
-        Width="180"
-        MinHeight="200"
-        MaxHeight="800"
-        SizeToContent="Height"
+        Width="900"
+        Height="600"
         
         Title="Excel工具箱">
     <Window.Styles>
@@ -28,23 +26,139 @@
         </Style>
     </Window.Styles>
     <Grid>
-        <StackPanel HorizontalAlignment="Center" Margin="24" Spacing="12">
-            <Button Content="合并工作簿"
-                    Command="{Binding MultiExcelMergeCommand}"
+        <Image
+            Source="/Assets/background.jpg"
+            Stretch="UniformToFill"
+            Opacity="0.85"
+            IsHitTestVisible="False"/>
+        <Grid
+            Margin="12"
+            RowDefinitions="Auto, Auto, Auto, *, Auto"
+            RowSpacing="12">
+            <Grid 
+                Grid.Row="0"
+                ColumnDefinitions="100, Auto, Auto"
+                ColumnSpacing="12">
+                <Border
+                    Grid.Column="0"
+                    Background="#99FFFFFF"
+                    CornerRadius="6">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="#1F2937"
+                        Text="选择功能"/>
+                </Border>
+                <ComboBox
+                    Grid.Column="1"
+                    ItemsSource="{Binding Functions}"
+                    SelectedItem="{Binding SelectedFunction, Mode=TwoWay}">
+                </ComboBox>
+                <Button 
+                    Grid.Column="2"
+                    Content="开始执行"
                     Classes="primary"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Center" />
-            <Button Content="合并Excel"
-                    Command="{Binding MultiSheetMergeCommand}"
+                    Command="{Binding ExecuteCommandCommand}"/>
+            </Grid>
+            <Grid
+                IsVisible="{Binding ShowSelectSourceFolder}"
+                Grid.Row="1"
+                ColumnDefinitions="100, Auto, Auto"
+                ColumnSpacing="12">
+                <Border
+                    Grid.Column="0"
+                    Background="#99FFFFFF"
+                    CornerRadius="6">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="#1F2937"
+                        Text="文件路径"/>
+                </Border>
+                <Border
+                    Grid.Column="1"
+                    Background="#99FFFFFF"
+                    CornerRadius="6">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="#1F2937"
+                        Padding="12 0"
+                        Text="{Binding SourceFolderPath}"/>
+                </Border>
+                <Button
+                    Grid.Column="2"
+                    Content="选择"
                     Classes="primary"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Center" />
-            <Button Content="批量新建文件夹"
-                    Command="{Binding CreateFolderFromExcelCommand}"
+                    Command="{Binding SelectSourceFolderCommand}"/>
+            </Grid>
+            <Grid
+                IsVisible="{Binding ShowSelectTargetFolder}"
+                Grid.Row="2"
+                ColumnDefinitions="100, Auto, Auto"
+                ColumnSpacing="12">
+                <Border
+                    Grid.Column="0"
+                    Background="#99FFFFFF"
+                    CornerRadius="6">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="#1F2937"
+                        Text="保存路径"/>
+                </Border>
+                <Border
+                    Grid.Column="1"
+                    Background="#99FFFFFF"
+                    CornerRadius="6">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="#1F2937"
+                        Padding="12 0"
+                        Text="{Binding TargetFolderPath}"/>
+                </Border>
+                <Button
+                    Grid.Column="2"
+                    Content="选择"
                     Classes="primary"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Center" />
-        </StackPanel>
+                    Command="{Binding SelectTargetFolderCommand}"/>
+            </Grid>
+            <Grid
+                IsVisible="{Binding ShowSelectSourceFile}"
+                Grid.Row="1"
+                ColumnDefinitions="100, Auto, Auto"
+                ColumnSpacing="12">
+                <Border
+                    Grid.Column="0"
+                    Background="#99FFFFFF"
+                    CornerRadius="6">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Text="文件路径"
+                        Foreground="#1F2937"/>
+                </Border>
+                <Border
+                    Grid.Column="1"
+                    Background="#99FFFFFF"
+                    CornerRadius="6">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="#1F2937"
+                        Padding="12 0"
+                        Text="{Binding SourceFilePath}"/>
+                </Border>
+                <Button
+                    Grid.Column="2"
+                    Content="选择"
+                    Classes="primary"
+                    Command="{Binding SelectSourceFileCommand}"/>
+            </Grid>
+            <ProgressBar
+                Grid.Row="4"
+                Minimum="0"
+                Maximum="100"
+                Value="{Binding Progress}"/>
+        </Grid>
     </Grid>
 
 </Window>

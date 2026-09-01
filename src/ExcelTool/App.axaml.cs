@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using ExcelTool.Services.FileSystem;
+using ExcelTool.Services.Notifications;
 using ExcelTool.Services.Workflows;
 using ExcelTool.ViewModels;
 using ExcelTool.Views;
@@ -25,7 +26,8 @@ public partial class App : Application
                 new MultiExcelMergeService(),
                 new MultiSheetMergeService(),
                 new CreateFolderFromExcelService(),
-                filePickerService);
+                filePickerService,
+                new NotificationService(mainWindow));
             desktop.MainWindow = mainWindow;
         }
 

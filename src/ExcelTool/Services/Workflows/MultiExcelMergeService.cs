@@ -1,17 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ClosedXML.Excel;
 
 namespace ExcelTool.Services.Workflows;
 
 public class MultiExcelMergeService
 {
-    public XLWorkbook Merge(IEnumerable<string> filePaths)
+    public XLWorkbook Merge(
+        IEnumerable<string> filePaths,
+        IProgress<double>? progress = null)
     {
         var targetWorkbook = new XLWorkbook();
-        // 遍历所有Excel
-        foreach (var filePath in filePaths)
+        var fileList = filePaths.ToArray();
+        if (fileList.Length == 0)
         {
+            return targetWorkbook;
+        }
+        // 遍历所有Excel
+        for(var index = 0; index < fileList.Length; index++)
+        {
+            var filePath = fileList[index];
             using var sourceWorkbook = new XLWorkbook(filePath);
             // 遍历当前Excel的所有sheet
             foreach (var sourceSheet in sourceWorkbook.Worksheets)
@@ -52,6 +61,8 @@ public class MultiExcelMergeService
                     targetRowNumber++;
                 }
             }
+            
+            progress?.Report((index + 1) * 100.0 / fileList.Length);
         }
 
         return targetWorkbook;

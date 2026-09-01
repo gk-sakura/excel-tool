@@ -17,6 +17,70 @@ public class FilePickerService
     }
 
     /// <summary>
+    /// 选择文件夹并返回路径
+    /// </summary>
+    /// <param name="allowMultiple"></param>
+    /// <returns></returns>
+    public async Task<string[]> PickFolderAsync(bool allowMultiple = false)
+    {
+        var folders = await _storageProvider.OpenFolderPickerAsync(
+            new FolderPickerOpenOptions
+            {
+                Title = "选择文件夹",
+                AllowMultiple = allowMultiple,
+            });
+        return folders.Select(folder => folder.Path.LocalPath).ToArray();
+    }
+
+    /// <summary>
+    /// 选择指定格式的文件并返回路径
+    /// </summary>
+    /// <param name="extensions"></param>
+    /// <param name="allowMultiple"></param>
+    /// <returns></returns>
+    public async Task<string[]> PickFileAsync(
+        string[] extensions,
+        bool allowMultiple = false)
+    {
+        var files = await _storageProvider.OpenFilePickerAsync(
+            new FilePickerOpenOptions
+            {
+                Title = "选择文件",
+                AllowMultiple = allowMultiple,
+                FileTypeFilter = 
+                    [
+                        new FilePickerFileType("自定义文件")
+                        {
+                            Patterns = extensions
+                        }
+                    ]
+            });
+        return files.Select(file => file.Path.LocalPath).ToArray();
+    }
+
+    /// <summary>
+    /// 获取文件夹下所有指定类型的文件并返回路径
+    /// </summary>
+    /// <param name="folderPath"></param>
+    /// <param name="extensions"></param>
+    /// <param name="allowMultiple"></param>
+    /// <returns></returns>
+    public async Task<string[]> GetFolderFilesAsync(
+        string folderPath,
+        string[] extensions,
+        bool allowMultiple = false)
+    {
+        var searchOption = allowMultiple ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+        return Directory
+            .EnumerateFiles(folderPath, "*", searchOption)
+            .Where(file => !Path.GetFileName(file).StartsWith("~$"))
+            .Where(file => extensions.Contains(
+                Path.GetExtension(file),
+                StringComparer.OrdinalIgnoreCase))
+            .ToArray();
+    }
+
+    /// <summary>
     /// 选择多个Excel文件
     /// </summary>
     /// <returns></returns>
@@ -76,17 +140,18 @@ public class FilePickerService
     }
 
     /// <summary>
-    /// 保存Excel到桌面
+    /// 保存Excel到指定位置
     /// </summary>
     /// <param name="workbook"></param>
+    /// <param name="targetFolderPath"></param>
     /// <param name="suggestedFileName"></param>
     /// <returns></returns>
     public async Task<string?> SaveExcelAsync(
         XLWorkbook workbook,
+        string targetFolderPath,
         string suggestedFileName = "合并结果.xlsx")
     {
-        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        var filePath = Path.Combine(desktopPath, suggestedFileName);
+        var filePath = Path.Combine(targetFolderPath, suggestedFileName);
         workbook.SaveAs(filePath);
 
         return filePath;
