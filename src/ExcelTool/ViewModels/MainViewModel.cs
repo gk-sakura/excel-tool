@@ -7,6 +7,7 @@ using ExcelTool.Services.FileSystem;
 using ExcelTool.Services.Workflows;
 using System.Threading.Tasks;
 using ExcelTool.Services.Notifications;
+using ExcelTool.Models;
 
 namespace ExcelTool.ViewModels;
 
@@ -19,29 +20,31 @@ public partial class MainViewModel : ViewModelBase
     private readonly INotificationService _notificationService;
     private readonly IProgress<double> _progressReporter;
 
-    public IReadOnlyList<string> Functions { get; } =
+    public IReadOnlyList<FunctionOption> Functions { get; } =
     [
-        "合并工作簿",
-        "合并工作表",
-        "批量创建文件夹",
+        new(ExcelFunction.MergeWorkbooks, "合并工作簿"),
+        new(ExcelFunction.MergeWorksheets, "合并工作表"),
+        new(ExcelFunction.CreateFolders, "批量创建文件夹"),
     ];
 
     [ObservableProperty] private double _progress;
     [ObservableProperty] private string _sourceFolderPath = "";
     [ObservableProperty] private string _targetFolderPath = "";
-    [ObservableProperty] private string _selectedFunction = "合并工作簿";
+    [ObservableProperty] private FunctionOption _selectedFunction;
     [ObservableProperty] private string _sourceFilePath = "";
 
-    public bool ShowSelectSourceFolder => SelectedFunction is "合并工作簿" or "合并工作表";
-    public bool ShowSelectTargetFolder => SelectedFunction is "合并工作簿" or "合并工作表" or "批量创建文件夹";
-    public bool ShowSelectSourceFile => SelectedFunction is "批量创建文件夹";
+    public bool ShowSelectSourceFolder => SelectedFunction.Value is ExcelFunction.MergeWorkbooks or ExcelFunction.MergeWorksheets;
+    public bool ShowSelectTargetFolder => 
+        SelectedFunction.Value is ExcelFunction.MergeWorkbooks or ExcelFunction.MergeWorksheets or ExcelFunction.CreateFolders;
+    public bool ShowSelectSourceFile => SelectedFunction.Value is ExcelFunction.CreateFolders;
 
-    partial void OnSelectedFunctionChanged(string value)
+    partial void OnSelectedFunctionChanged(FunctionOption value)
     {
         OnPropertyChanged(nameof(ShowSelectSourceFolder));
         OnPropertyChanged(nameof(ShowSelectTargetFolder));
         OnPropertyChanged(nameof(ShowSelectSourceFile));
     }
+    
     
     public MainViewModel(
         MultiExcelMergeService multiExcelMergeService,
@@ -56,6 +59,7 @@ public partial class MainViewModel : ViewModelBase
         _filePickerService = filePickerService;
         _notificationService = notificationService;
         
+        _selectedFunction = Functions[0];
         _progressReporter = new Progress<double>(value => Progress = value);
         TargetFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
     }
@@ -129,15 +133,15 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
 
-        switch (SelectedFunction)
+        switch (SelectedFunction.Value)
         {
-            case "合并工作簿":
+            case ExcelFunction.MergeWorkbooks:
                 await MultiExcelMergeAsync();
                 break;
-            case "合并工作表":
+            case ExcelFunction.MergeWorksheets:
                 await MultiSheetMergeAsync();
                 break;
-            case "批量创建文件夹":
+            case ExcelFunction.CreateFolders:
                 await CreateFolderFromExcelAsync();
                 break;
             default:
@@ -198,6 +202,6 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
         await Task.Run(() => _createFolderFromExcelService.CreateFolders(TargetFolderPath, names, _progressReporter));
-        _notificationService.ShowSuccess("提示", "新建成功");
+        _notificationService.ShowSuccess("提示", "创建成功");
     }
 }

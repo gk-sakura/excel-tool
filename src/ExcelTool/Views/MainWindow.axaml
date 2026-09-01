@@ -53,6 +53,11 @@
                     Grid.Column="1"
                     ItemsSource="{Binding Functions}"
                     SelectedItem="{Binding SelectedFunction, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}"></TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
                 <Button 
                     Grid.Column="2"
