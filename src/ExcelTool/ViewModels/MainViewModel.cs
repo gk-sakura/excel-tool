@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ExcelTool.Services.FileSystem;
@@ -16,6 +17,7 @@ public partial class MainViewModel : ViewModelBase
     private readonly MultiExcelMergeService _multiExcelMergeService;
     private readonly MultiSheetMergeService _multiSheetMergeService;
     private readonly CreateFolderFromExcelService _createFolderFromExcelService;
+    private readonly RdAttendanceGenerationService _rdAttendanceGenerationService;
     private readonly FilePickerService _filePickerService;
     private readonly INotificationService _notificationService;
     private readonly IProgress<double> _progressReporter;
@@ -25,6 +27,7 @@ public partial class MainViewModel : ViewModelBase
         new(ExcelFunction.MergeWorkbooks, "合并工作簿"),
         new(ExcelFunction.MergeWorksheets, "合并工作表"),
         new(ExcelFunction.CreateFolders, "批量创建文件夹"),
+        new(ExcelFunction.GenerateRdAttendance, "研发工时及日志"),
     ];
 
     [ObservableProperty] private double _progress;
@@ -32,17 +35,34 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] private string _targetFolderPath = "";
     [ObservableProperty] private FunctionOption _selectedFunction;
     [ObservableProperty] private string _sourceFilePath = "";
+    [ObservableProperty] private string _rdAttendanceFilePath = "";
+    [ObservableProperty] private string _rdProjectSummaryFilePath = "";
+    [ObservableProperty] private string _rdPersonProjectFilePath = "";
+    [ObservableProperty] private string _rdStaffFilePath = "";
+    [ObservableProperty] private string _rdRulesFilePath = "";
+    [ObservableProperty] private string _rdHistoryLockFilePath = "";
+    [ObservableProperty] private string _rdControlTableFilePath = "";
+
+    public string RdAttendanceDisplayPath => CompactPath(RdAttendanceFilePath);
+    public string RdProjectSummaryDisplayPath => CompactPath(RdProjectSummaryFilePath);
+    public string RdPersonProjectDisplayPath => CompactPath(RdPersonProjectFilePath);
+    public string RdStaffDisplayPath => CompactPath(RdStaffFilePath);
+    public string RdRulesDisplayPath => CompactPath(RdRulesFilePath);
+    public string RdHistoryLockDisplayPath => CompactPath(RdHistoryLockFilePath);
+    public string RdControlTableDisplayPath => CompactPath(RdControlTableFilePath);
 
     public bool ShowSelectSourceFolder => SelectedFunction.Value is ExcelFunction.MergeWorkbooks or ExcelFunction.MergeWorksheets;
     public bool ShowSelectTargetFolder => 
-        SelectedFunction.Value is ExcelFunction.MergeWorkbooks or ExcelFunction.MergeWorksheets or ExcelFunction.CreateFolders;
+        SelectedFunction.Value is ExcelFunction.MergeWorkbooks or ExcelFunction.MergeWorksheets or ExcelFunction.CreateFolders or ExcelFunction.GenerateRdAttendance;
     public bool ShowSelectSourceFile => SelectedFunction.Value is ExcelFunction.CreateFolders;
+    public bool ShowSelectSourceFiles => SelectedFunction.Value is ExcelFunction.GenerateRdAttendance;
 
     partial void OnSelectedFunctionChanged(FunctionOption value)
     {
         OnPropertyChanged(nameof(ShowSelectSourceFolder));
         OnPropertyChanged(nameof(ShowSelectTargetFolder));
         OnPropertyChanged(nameof(ShowSelectSourceFile));
+        OnPropertyChanged(nameof(ShowSelectSourceFiles));
     }
     
     
@@ -50,18 +70,36 @@ public partial class MainViewModel : ViewModelBase
         MultiExcelMergeService multiExcelMergeService,
         MultiSheetMergeService multiSheetMergeService,
         CreateFolderFromExcelService createFolderFromExcelService,
+        RdAttendanceGenerationService rdAttendanceGenerationService,
         FilePickerService filePickerService,
         INotificationService notificationService)
     {
         _multiExcelMergeService = multiExcelMergeService;
         _multiSheetMergeService = multiSheetMergeService;
         _createFolderFromExcelService = createFolderFromExcelService;
+        _rdAttendanceGenerationService = rdAttendanceGenerationService;
         _filePickerService = filePickerService;
         _notificationService = notificationService;
         
         _selectedFunction = Functions[0];
         _progressReporter = new Progress<double>(value => Progress = value);
         TargetFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+    }
+
+    partial void OnRdAttendanceFilePathChanged(string value) => OnPropertyChanged(nameof(RdAttendanceDisplayPath));
+    partial void OnRdProjectSummaryFilePathChanged(string value) => OnPropertyChanged(nameof(RdProjectSummaryDisplayPath));
+    partial void OnRdPersonProjectFilePathChanged(string value) => OnPropertyChanged(nameof(RdPersonProjectDisplayPath));
+    partial void OnRdStaffFilePathChanged(string value) => OnPropertyChanged(nameof(RdStaffDisplayPath));
+    partial void OnRdRulesFilePathChanged(string value) => OnPropertyChanged(nameof(RdRulesDisplayPath));
+    partial void OnRdHistoryLockFilePathChanged(string value) => OnPropertyChanged(nameof(RdHistoryLockDisplayPath));
+    partial void OnRdControlTableFilePathChanged(string value) => OnPropertyChanged(nameof(RdControlTableDisplayPath));
+
+    private static string CompactPath(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return path;
+
+        var fileName = Path.GetFileName(path);
+        return string.IsNullOrWhiteSpace(fileName) ? path : $"…/{fileName}";
     }
 
     /// <summary>
@@ -109,6 +147,36 @@ public partial class MainViewModel : ViewModelBase
         TargetFolderPath = folderPath;
     }
 
+    [RelayCommand]
+    private async Task<string?> PickRdSourceFileAsync()
+    {
+        var filePaths = await _filePickerService.PickExcelFilesAsync(false);
+        if (filePaths.Length == 0) return null;
+        TargetFolderPath = Path.GetDirectoryName(filePaths[0]) ?? TargetFolderPath;
+        return filePaths[0];
+    }
+
+    [RelayCommand] private async Task SelectRdAttendanceFileAsync() =>
+        RdAttendanceFilePath = await PickRdSourceFileAsync() ?? RdAttendanceFilePath;
+
+    [RelayCommand] private async Task SelectRdProjectSummaryFileAsync() =>
+        RdProjectSummaryFilePath = await PickRdSourceFileAsync() ?? RdProjectSummaryFilePath;
+
+    [RelayCommand] private async Task SelectRdPersonProjectFileAsync() =>
+        RdPersonProjectFilePath = await PickRdSourceFileAsync() ?? RdPersonProjectFilePath;
+
+    [RelayCommand] private async Task SelectRdStaffFileAsync() =>
+        RdStaffFilePath = await PickRdSourceFileAsync() ?? RdStaffFilePath;
+
+    [RelayCommand] private async Task SelectRdRulesFileAsync() =>
+        RdRulesFilePath = await PickRdSourceFileAsync() ?? RdRulesFilePath;
+
+    [RelayCommand] private async Task SelectRdHistoryLockFileAsync() =>
+        RdHistoryLockFilePath = await PickRdSourceFileAsync() ?? RdHistoryLockFilePath;
+
+    [RelayCommand] private async Task SelectRdControlTableFileAsync() =>
+        RdControlTableFilePath = await PickRdSourceFileAsync() ?? RdControlTableFilePath;
+
     /// <summary>
     /// 执行按钮命令
     /// </summary>
@@ -133,6 +201,17 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
 
+
+        if (ShowSelectSourceFiles && new[]
+            {
+                RdAttendanceFilePath, RdProjectSummaryFilePath, RdPersonProjectFilePath,
+                RdStaffFilePath, RdRulesFilePath
+            }.Any(string.IsNullOrWhiteSpace))
+        {
+            _notificationService.ShowWarning("提示", "请分别选择全部 5 类必需 Excel 文件");
+            return;
+        }
+
         switch (SelectedFunction.Value)
         {
             case ExcelFunction.MergeWorkbooks:
@@ -144,9 +223,39 @@ public partial class MainViewModel : ViewModelBase
             case ExcelFunction.CreateFolders:
                 await CreateFolderFromExcelAsync();
                 break;
+            case ExcelFunction.GenerateRdAttendance:
+                await GenerateRdAttendanceAsync();
+                break;
             default:
                 _notificationService.ShowWarning("提示", "请选择需要执行的功能");
                 break;
+        }
+    }
+
+    private async Task GenerateRdAttendanceAsync()
+    {
+        Progress = 0;
+        try
+        {
+            var result = await Task.Run(() => _rdAttendanceGenerationService.Generate(
+                new RdAttendanceSourceFiles(
+                    RdAttendanceFilePath,
+                    RdProjectSummaryFilePath,
+                    RdPersonProjectFilePath,
+                    RdStaffFilePath,
+                    RdRulesFilePath,
+                    RdHistoryLockFilePath,
+                    RdControlTableFilePath),
+                TargetFolderPath,
+                _progressReporter));
+            Progress = 100;
+            _notificationService.ShowSuccess(
+                "生成成功",
+                $"已生成内部复核版、发企业版及 {result.LogFileCount} 份研发日志\n保存位置：{result.OutputFolder}");
+        }
+        catch (Exception ex)
+        {
+            _notificationService.ShowWarning("生成失败", ex.Message);
         }
     }
     

@@ -94,7 +94,7 @@ public class FilePickerService
                 FileTypeFilter = [
                     new FilePickerFileType("Excel 文件")
                     {
-                        Patterns = ["*.xlsx"]
+                        Patterns = ["*.xlsx", "*.xls"]
                     }
                 ]
             });

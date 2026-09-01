@@ -8,8 +8,10 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         
-        Width="900"
-        Height="600"
+        Width="1120"
+        Height="650"
+        MinWidth="1000"
+        MinHeight="580"
         
         Title="Excel工具箱">
     <Window.Styles>
@@ -157,6 +159,48 @@
                     Content="选择"
                     Classes="primary"
                     Command="{Binding SelectSourceFileCommand}"/>
+            </Grid>
+            <Grid
+                IsVisible="{Binding ShowSelectSourceFiles}"
+                Grid.Row="1"
+                ColumnDefinitions="*">
+                <StackPanel Spacing="8">
+                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
+                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="研发人员考勤源表"/></Border>
+                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdAttendanceDisplayPath}" ToolTip.Tip="{Binding RdAttendanceFilePath}"/></Border>
+                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdAttendanceFileCommand}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
+                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="研发项目及周期汇总表"/></Border>
+                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdProjectSummaryDisplayPath}" ToolTip.Tip="{Binding RdProjectSummaryFilePath}"/></Border>
+                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdProjectSummaryFileCommand}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
+                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="人员与项目关系匹配表"/></Border>
+                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdPersonProjectDisplayPath}" ToolTip.Tip="{Binding RdPersonProjectFilePath}"/></Border>
+                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdPersonProjectFileCommand}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
+                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="人员花名册及基础信息"/></Border>
+                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdStaffDisplayPath}" ToolTip.Tip="{Binding RdStaffFilePath}"/></Border>
+                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdStaffFileCommand}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
+                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="考勤规则拆解表"/></Border>
+                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdRulesDisplayPath}" ToolTip.Tip="{Binding RdRulesFilePath}"/></Border>
+                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdRulesFileCommand}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
+                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="历史月份锁定表（可选）"/></Border>
+                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdHistoryLockDisplayPath}" ToolTip.Tip="{Binding RdHistoryLockFilePath}"/></Border>
+                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdHistoryLockFileCommand}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="180, *, Auto" ColumnSpacing="12">
+                        <Border Grid.Column="0" Background="#99FFFFFF" CornerRadius="6"><TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1F2937" Text="日志与分配控制表（可选）"/></Border>
+                        <Border Grid.Column="1" Background="#99FFFFFF" CornerRadius="6"><TextBlock VerticalAlignment="Center" Foreground="#1F2937" Padding="12 6" TextWrapping="Wrap" Text="{Binding RdControlTableDisplayPath}" ToolTip.Tip="{Binding RdControlTableFilePath}"/></Border>
+                        <Button Grid.Column="2" Content="选择" Classes="primary" Command="{Binding SelectRdControlTableFileCommand}"/>
+                    </Grid>
+                </StackPanel>
             </Grid>
             <ProgressBar
                 Grid.Row="4"

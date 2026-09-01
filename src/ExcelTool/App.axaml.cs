@@ -26,6 +26,7 @@ public partial class App : Application
                 new MultiExcelMergeService(),
                 new MultiSheetMergeService(),
                 new CreateFolderFromExcelService(),
+                new RdAttendanceGenerationService(),
                 filePickerService,
                 new NotificationService(mainWindow));
             desktop.MainWindow = mainWindow;

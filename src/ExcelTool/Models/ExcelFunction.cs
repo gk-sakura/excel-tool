@@ -5,4 +5,5 @@ public enum ExcelFunction
     MergeWorkbooks,
     MergeWorksheets,
     CreateFolders,
+    GenerateRdAttendance,
 }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <EmbeddedResource Include="Templates\**\*.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,5 +22,6 @@
     </PackageReference>
     <PackageReference Include="ClosedXML" Version="0.105.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="ExcelDataReader" Version="3.9.0" />
   </ItemGroup>
 </Project>
